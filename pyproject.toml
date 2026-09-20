@@ -1,0 +1,21 @@
+[project]
+name = "08"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Ruslan Babashaikhov", email = "ruslan.babashaikhov@gmail.com" }
+]
+requires-python = ">=3.12.8"
+dependencies = [
+    "python-dotenv>=1.2.3",
+    "requests>=2.34.2",
+    "yandex-ai-studio-sdk>=0.22.1",
+]
+
+[project.scripts]
+08 = "08:main"
+
+[build-system]
+requires = ["uv_build>=0.12.17,<0.13.0"]
+build-backend = "uv_build"
