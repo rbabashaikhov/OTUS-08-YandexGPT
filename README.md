@@ -1,20 +1,125 @@
-# Yandex AI SDK Playground
+# YandexGPT Python Examples
 
-Small Python playground for experimenting with YandexGPT.
+Учебный проект по работе с YandexGPT на Python.
 
-The project demonstrates two ways of interacting with YandexGPT:
+В репозитории собраны несколько вариантов взаимодействия с YandexGPT: от прямого REST API до использования Python SDK и простого интерактивного чата с историей диалога.
 
-- direct REST API requests using `requests`
-- Yandex AI Studio Python SDK
-- multi-turn conversation history
-- environment variables with `.env`
-- dependency management with `uv`
+## Содержимое
 
-## Setup
+### main.py
 
-```bash
-git clone <repo-url>
-cd yandex-ai-sdk-playground
+Пример работы с YandexGPT через REST API.
+
+В этом варианте используется библиотека requests, а запрос к модели формируется вручную:
+
+- задаётся URL API;
+- формируются HTTP-заголовки;
+- передаётся API-ключ;
+- указывается модель;
+- задаются параметры генерации;
+- передаётся список сообщений;
+- обрабатывается JSON-ответ.
+
+### main_sdk.py
+
+Тот же сценарий, но через Python SDK Yandex AI Studio.
+
+Используется пакет:
+
+yandex-ai-studio-sdk
+
+SDK берёт на себя формирование запроса, авторизацию и обработку ответа.
+
+### main_sdk_chat.py
+
+Простой интерактивный чат в терминале.
+
+Чат:
+
+- принимает сообщения пользователя через input();
+- хранит историю диалога в списке messages;
+- передаёт всю историю YandexGPT при каждом новом запросе;
+- сохраняет ответы модели в историю;
+- поддерживает команду /history;
+- поддерживает завершение работы через exit, quit или выход.
+
+Принцип работы чата:
+
+Пользователь вводит сообщение
+        ↓
+Сообщение добавляется в messages
+        ↓
+Вся история отправляется YandexGPT
+        ↓
+Модель генерирует ответ
+        ↓
+Ответ выводится в терминал
+        ↓
+Ответ добавляется в messages
+        ↓
+Цикл повторяется
+
+## Установка
+
+Проект использует uv для управления зависимостями и виртуальным окружением.
+
+Клонируйте репозиторий и перейдите в папку проекта:
+
+git clone <repository-url>
+cd <repository-name>
+
+Установите зависимости:
 
 uv sync
-source .venv/bin/activate
+
+## Переменные окружения
+
+Для работы проекта необходимо создать файл .env.
+
+Пример:
+
+YC_API_KEY=your_api_key
+YC_FOLDER_ID=your_folder_id
+
+Файл .env содержит секретные данные и не должен попадать в Git.
+
+Пример структуры переменных находится в .env.example.
+
+## Запуск
+
+REST API:
+
+uv run python main.py
+
+Python SDK:
+
+uv run python main_sdk.py
+
+Интерактивный чат:
+
+uv run python main_sdk_chat.py
+
+## Используемые технологии
+
+- Python
+- YandexGPT
+- Yandex AI Studio
+- Yandex AI Studio Python SDK
+- REST API
+- requests
+- python-dotenv
+- uv
+
+## Цель проекта
+
+Проект создан для практического изучения работы с LLM API.
+
+Последовательность примеров показывает, как меняется уровень абстракции:
+
+REST API
+   ↓
+Python SDK
+   ↓
+SDK + conversation history
+
+Сначала взаимодействие с моделью выполняется напрямую через HTTP-запросы, затем та же логика реализуется через SDK, после чего добавляется многоходовый диалог с сохранением истории сообщений.
