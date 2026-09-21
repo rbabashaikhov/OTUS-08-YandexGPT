@@ -1,59 +1,58 @@
 import os
 
-import requests
 from dotenv import load_dotenv
+from yandex_ai_studio_sdk import AIStudio
+
 
 load_dotenv()
 
 YC_API_KEY = os.getenv("YC_API_KEY")
 YC_FOLDER_ID = os.getenv("YC_FOLDER_ID")
 
-prompt = {
-    "modelUri": f"gpt://{YC_FOLDER_ID}/yandexgpt-lite",
-    "completionOptions": {
-        "stream": False,
-        "temperature": 0.6,
-        "maxTokens": "2000"
-    },
-    "messages": [
-        {
-            "role": "system",
-            "text": "Ты ассистент дроид, способный помочь в галактических приключениях."
-        },
+
+sdk = AIStudio(
+    folder_id=YC_FOLDER_ID,
+    auth=YC_API_KEY,
+)
+
+model = sdk.models.completions("yandexgpt-lite")
+
+model = model.configure(
+    temperature=0.6,
+    max_tokens=1000,
+)
+
+messages = [
+    {
+        "role": "system",
+        "text": "Ты дружелюбный помощник. Отвечай кратко и понятно."
+    }
+]
+
+
+while True:
+    user_text = input("Ты: ")
+
+    if user_text.lower() in ["exit", "quit", "выход"]:
+        print("Чат завершён.")
+        break
+
+    messages.append(
         {
             "role": "user",
-            "text": "Привет, Дроид! Мне нужна твоя помощь, чтобы узнать больше о Силе. Как я могу научиться ее использовать?"
-        },
+            "text": user_text
+        }
+    )
+
+    result = model.run(messages)
+
+    assistant_text = result[0].text
+
+    print(f"YandexGPT: {assistant_text}")
+
+    messages.append(
         {
             "role": "assistant",
-            "text": "Привет! Чтобы овладеть Силой, тебе нужно понять ее природу. Сила находится вокруг нас и соединяет всю галактику. Начнем с основ медитации."
-        },
-        {
-            "role": "user",
-            "text": "Хорошо, а как насчет строения светового меча? Это важная часть тренировки джедая. Как мне создать его?"
+            "text": assistant_text
         }
-    ]
-}
-
-
-url = "https://llm.api.cloud.yandex.net/foundationModels/v1/completion"
-headers = {
-    "Content-Type": "application/json",
-    "Authorization": f"Api-Key {YC_API_KEY}"
-}
-
-response = requests.post(url, headers=headers, json=prompt)
-
-#print(response.json())
-
-with open("result.json", "w", encoding="utf-8") as f:
-    f.write(response.text)
-
-print(
-    response
-    .json()
-    .get("result")
-    .get("alternatives")[0]
-    .get("message")
-    .get("text")
-)  
+    )
