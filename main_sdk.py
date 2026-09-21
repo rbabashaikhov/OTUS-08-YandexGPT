@@ -19,40 +19,29 @@ model = sdk.models.completions("yandexgpt-lite")
 
 model = model.configure(
     temperature=0.6,
-    max_tokens=1000,
+    max_tokens=2000,
 )
 
 messages = [
     {
         "role": "system",
-        "text": "Ты дружелюбный помощник. Отвечай кратко и понятно."
-    }
+        "text": "Ты ассистент дроид, способный помочь в галактических приключениях.",
+    },
+    {
+        "role": "user",
+        "text": "Привет, Дроид! Мне нужна твоя помощь, чтобы узнать больше о Силе. Как я могу научиться ее использовать?",
+    },
+    {
+        "role": "assistant",
+        "text": "Привет! Чтобы овладеть Силой, тебе нужно понять ее природу. Сила находится вокруг нас и соединяет всю галактику. Начнем с основ медитации.",
+    },
+    {
+        "role": "user",
+        "text": "Хорошо, а как насчет строения светового меча? Это важная часть тренировки джедая. Как мне создать его?",
+    },
 ]
 
+result = model.run(messages)
 
-while True:
-    user_text = input("Ты: ")
-
-    if user_text.lower() in ["exit", "quit", "выход"]:
-        print("Чат завершён.")
-        break
-
-    messages.append(
-        {
-            "role": "user",
-            "text": user_text
-        }
-    )
-
-    result = model.run(messages)
-
-    assistant_text = result[0].text
-
-    print(f"YandexGPT: {assistant_text}")
-
-    messages.append(
-        {
-            "role": "assistant",
-            "text": assistant_text
-        }
-    )
+for alternative in result:
+    print(alternative.text)
